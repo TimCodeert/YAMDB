@@ -14,11 +14,12 @@ class Movie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    #[ORM\ManyToOne(targetEntity: Director::class)]
+    #[ORM\JoinColumn(nullable: false)] // Ensures every Movie MUST have a Director
+    private ?Director $director = null; // Property now holds a Director object
 
     #[ORM\Column(length: 255)]
-    private ?string $director = null;
+    private ?string $title = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $releaseDate = null;
@@ -31,6 +32,18 @@ class Movie
         return $this->id;
     }
 
+    public function getDirector(): ?Director
+    {
+        return $this->director;
+    }
+
+    public function setDirector(?Director $director): static
+    {
+        $this->director = $director;
+
+        return $this;
+    }
+
     public function getTitle(): ?string
     {
         return $this->title;
@@ -39,18 +52,6 @@ class Movie
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    public function getDirector(): ?string
-    {
-        return $this->director;
-    }
-
-    public function setDirector(string $director): static
-    {
-        $this->director = $director;
 
         return $this;
     }
