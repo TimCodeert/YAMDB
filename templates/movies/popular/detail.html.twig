@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ movie.title }} Details{% endblock %}
+
+{% block body %}
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        {# ⭐️ Back Button ⭐️ #}
+        <div class="mb-6">
+            <a href="{{ path('movie_list') }}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 transition duration-150 font-medium">
+                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Back to Movie List
+            </a>
+        </div>
+
+        <div class="bg-white shadow-xl rounded-lg overflow-hidden p-8 border border-gray-200">
+
+            {# Title and Rank #}
+            <div class="border-b pb-4 mb-4 flex justify-between items-start">
+                <div>
+                    <h1 class="text-4xl font-extrabold text-gray-900 mb-1">{{ movie.title }}</h1>
+                    <p class="text-lg text-gray-500">Released: {{ movie.releaseDate|date('F j, Y') }}</p>
+                </div>
+                <div class="flex-shrink-0">
+                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                        Rank #{{ movie.id }}
+                    </span>
+                </div>
+            </div>
+
+            {# Director and ID #}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 mb-6">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Director</p>
+                    <p class="mt-1 text-lg font-semibold text-gray-900">{{ movie.director.name }}</p>
+                </div>
+            </div>
+
+            {# Description #}
+            <div>
+                <h2 class="text-xl font-bold text-gray-900 mb-3 border-t pt-4">Synopsis</h2>
+                <div class="text-gray-700 leading-relaxed space-y-4">
+                    <p>{{ movie.description }}</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+{% endblock %}
