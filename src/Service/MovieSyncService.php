@@ -37,11 +37,25 @@ class MovieSyncService
         $page = 1;
         $limit = min($this->tmdbService->getLimitPopularMovies(), self::PAGE_LIMIT);
         $this->em->getConnection()->executeStatement('TRUNCATE TABLE movie');
+        $externalIds = [];
         while ($page <= $limit) {
             $movies = $this->tmdbService->getPopularMovies($page);
             $directors = $this->directorResolver->getDirectorLookupMap($movies->all());
 
             foreach ($movies as $movie) {
+
+                if (isset($externalIds[$movie->getExternalId()])) {
+                    $this->logger->info(
+                        sprintf('Movie was already imported: %s (already present on page %s but also found on %s)',
+                            $movie->getTitle(),
+                            $externalIds[$movie->getExternalId()],
+                            $page,
+                        )
+                    );
+                    continue;
+                }
+                $externalIds[$movie->getExternalId()] = $page;
+
                 $directorName = $movie->getDirector()->getName();
                 $directorEntity = $directors[$directorName] ?? null;
 

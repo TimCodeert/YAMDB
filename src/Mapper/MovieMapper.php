@@ -7,7 +7,6 @@ use App\Entity\Director;
 use App\Model\MovieCollection;
 use App\Model\Movie as DomainMovie;
 use App\Entity\Movie;
-use App\Repository\DirectorRepository;
 use DateTimeImmutable;
 
 class MovieMapper
@@ -33,11 +32,12 @@ class MovieMapper
         $collection = new MovieCollection();
 
         foreach ($moviesData as $movieData) {
+            $externalId = $movieData['id'];
             $title = $movieData['title'];
-            $director = $this->directorMapper->mapToDomain($directors[$movieData['id']]);
+            $director = $this->directorMapper->mapToDomain($directors[$externalId]);
             $releaseDate = new DateTimeImmutable($movieData['release_date']);
             $description = $movieData['overview'];
-            $collection->addMovie(new DomainMovie($title, $director, $releaseDate, $description));
+            $collection->addMovie(new DomainMovie($externalId, $title, $director, $releaseDate, $description));
         }
 
         return $collection;
