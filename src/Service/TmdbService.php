@@ -88,7 +88,6 @@ class TmdbService
     private function getDirector(array $credits): string
     {
         $director = array_find($credits['crew'], fn($m) => $m['job'] === 'Director');
-
         return $director ? $director['name'] : 'No director found';
     }
 
@@ -99,15 +98,21 @@ class TmdbService
 
     private function fetchFromTmdb(string $url, $page = 1): array
     {
-        return $this->client->request('GET', $url, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->apiKey,
-                'accept' => 'application/json',
-            ],
-            'query' => [
-                'language' => self::LANGUAGE,
-                'page' => $page,
-            ],
-        ])->toArray();
+        try {
+            return $this->client->request('GET', $url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->apiKey,
+                    'accept' => 'application/json',
+                ],
+                'query' => [
+                    'language' => self::LANGUAGE,
+                    'page' => $page,
+                ],
+            ])->toArray();
+        } catch (\Exception $e) {
+            $this->logger->warning(sprintf('Failed to fetch movies for page %d: %s', $page, $e->getMessage()));
+            return [];
+        }
+
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Mapper\MovieMapper;
-use App\Repository\DirectorRepository;
 use App\Resolver\DirectorResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -36,14 +35,18 @@ class MovieSyncService
     {
         $page = 1;
         $limit = min($this->tmdbService->getLimitPopularMovies(), self::PAGE_LIMIT);
-        $this->em->getConnection()->executeStatement('TRUNCATE TABLE movie');
         $externalIds = [];
+
+        // API always returns unfiltered data, so it's faster to insert movie data instead of upsert
+        $this->em->getConnection()->executeStatement('TRUNCATE TABLE movie');
         while ($page <= $limit) {
+            // Get movie data from API, already mapped into MovieCollection
             $movies = $this->tmdbService->getPopularMovies($page);
+            // Upsert directors from movies, create lookup for later insertion
             $directors = $this->directorResolver->getDirectorLookupMap($movies->all());
 
             foreach ($movies as $movie) {
-
+                // API returns duplicates
                 if (isset($externalIds[$movie->getExternalId()])) {
                     $this->logger->info(
                         sprintf('Movie was already imported: %s (already present on page %s but also found on %s)',
@@ -56,14 +59,9 @@ class MovieSyncService
                 }
                 $externalIds[$movie->getExternalId()] = $page;
 
+                // Map to DB entity and persist
                 $directorName = $movie->getDirector()->getName();
                 $directorEntity = $directors[$directorName] ?? null;
-
-                if ($directorEntity === null) {
-                    $this->logger->error(sprintf('Director entity not found for name: %s', $directorName));
-                    continue;
-                }
-
                 $movieEntity = $this->mapper->mapToEntity($movie, $directorEntity);
                 $this->em->persist($movieEntity);
             }
@@ -78,6 +76,7 @@ class MovieSyncService
                 ]
             );
 
+            // API returns broken pages
             $count = count($movies);
             if ($count < 20) {
                 $this->logger->warning(
