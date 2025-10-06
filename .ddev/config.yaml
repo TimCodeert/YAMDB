@@ -13,6 +13,10 @@ use_dns_when_possible: true
 composer_version: "2"
 web_environment: []
 corepack_enable: false
+hooks:
+    post-start:
+        - exec-host:
+            ddev exec ./init.sh
 
 # Key features of DDEV's config.yaml:
 

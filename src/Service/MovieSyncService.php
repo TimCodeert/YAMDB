@@ -6,6 +6,8 @@ use App\Mapper\MovieMapper;
 use App\Resolver\DirectorResolver;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class MovieSyncService
 {
@@ -31,11 +33,14 @@ class MovieSyncService
         $this->directorResolver = $directorResolver;
     }
 
-    public function syncMovies(): void
+    public function syncMovies(OutputInterface $output): void
     {
         $page = 1;
         $limit = min($this->tmdbService->getLimitPopularMovies(), self::PAGE_LIMIT);
         $externalIds = [];
+
+        $progressBar = new ProgressBar($output, $limit);
+        $progressBar->start();
 
         // API always returns unfiltered data, so it's faster to insert movie data instead of upsert
         $this->em->getConnection()->executeStatement('TRUNCATE TABLE movie');
@@ -78,8 +83,11 @@ class MovieSyncService
 
             // API returns broken pages
             $count = count($movies);
+
+            $progressBar->setMessage(sprintf('Processing page %d (%d movies)', $page, $count));
+            $progressBar->advance();
             if ($count < 20) {
-                $this->logger->warning(
+                $this->logger->info(
                     'Page returned less movies than 20',
                     [
                         'page' => $page,
@@ -90,5 +98,6 @@ class MovieSyncService
 
             $page++;
         }
+        $progressBar->finish();
     }
 }

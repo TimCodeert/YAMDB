@@ -31,11 +31,12 @@ class SyncPopularMoviesCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $io->info('Starting synchronization...');
         $startTime = microtime(true);
-        $this->movieSyncService->syncMovies();
+        $this->movieSyncService->syncMovies($output);
         $endTime = microtime(true);
         $duration = $endTime - $startTime;
 
-        $io->success(sprintf('Done in %s seconds.', intval($duration)));
+        $output->writeln("\n");
+        $io->success(sprintf("Done in %s seconds.", intval($duration)));
 
         return Command::SUCCESS;
     }
