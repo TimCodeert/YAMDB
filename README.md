@@ -7,6 +7,11 @@ YAMDB (Yet Another Movie Database) is a Symfony-based web application that impor
 1. **Docker** (https://docs.ddev.com/en/stable/users/install/docker-installation)
 2. **DDEV** (https://docs.ddev.com/en/stable/users/install/ddev-installation)
 
+## API KEY
+Create a key on TMDB (https://www.themoviedb.org) and fill it in .env
+    
+    TMDB_API_KEY=<FILL_IN_YOUR_API_KEY>
+
 ## Setup
 
 To get started, follow these steps:
