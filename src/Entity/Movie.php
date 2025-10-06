@@ -15,8 +15,8 @@ class Movie
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Director::class)]
-    #[ORM\JoinColumn(nullable: false)] // Ensures every Movie MUST have a Director
-    private ?Director $director = null; // Property now holds a Director object
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Director $director = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;

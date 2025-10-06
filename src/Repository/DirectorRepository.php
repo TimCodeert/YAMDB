@@ -7,9 +7,6 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Director>
- */
 class DirectorRepository extends ServiceEntityRepository
 {
     private EntityManagerInterface $em;

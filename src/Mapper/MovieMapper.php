@@ -2,7 +2,6 @@
 
 namespace App\Mapper;
 
-
 use App\Entity\Director;
 use App\Model\MovieCollection;
 use App\Model\Movie as DomainMovie;
