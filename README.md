@@ -25,3 +25,9 @@ To get started, follow these steps:
     ```bash
     ddev launch
     ```
+
+## Extra
+
+If the import failed or you want to reimport the movies you can run
+
+    bin/console app:sync-popular-movies
