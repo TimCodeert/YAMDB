@@ -20,7 +20,7 @@ class ListController extends AbstractController
         $pagination = $paginator->paginate(
             $query,
             $request->query->getInt('page', 1),
-            20
+            10
         );
 
         return $this->render('movies/popular/list.html.twig', [
