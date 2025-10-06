@@ -16,12 +16,7 @@ To get started, follow these steps:
     ddev init
     ```
 
-3. **Start Environment** 
-    ```bash
-    ddev start
-    ```
-
-4. **Navigate to the Application**
+2. **Navigate to the Application**
     ```bash
     ddev launch
     ```
